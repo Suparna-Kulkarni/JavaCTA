@@ -1,0 +1,208 @@
+package sdmcet.cse.oop;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+class GradeCalc extends JFrame implements ActionListener {
+	JFrame f;
+	JButton b;
+	JLabel l, l1, l2,l3, txtLbl1, txtLbl2, txtLbl3, txtLbl4, txtLbl5, TotalMarks, Grade;
+	Container contentPane;
+	JPanel p,t,d;
+	JTextField txt1, txt2, txt3, txt4, txt5;
+
+	public GradeCalc(String title) {
+		super(title);
+		
+		b = new JButton("Calculate");
+		b.addActionListener(this);
+
+		txtLbl1 = new JLabel("Enter IA-1 Marks:");
+		txt1 = new JTextField(5);
+
+		txtLbl2 = new JLabel("Enter IA-2 Marks:");
+		txt2 = new JTextField(5);
+
+		txtLbl3 = new JLabel("Enter IA-3 Marks:");
+		txt3 = new JTextField(5);
+
+		txtLbl4 = new JLabel("Enter CTA Marks:");
+		txt4 = new JTextField(5);
+
+		txtLbl5 = new JLabel("Enter SEE Marks:");
+		txt5 = new JTextField(5);
+
+		TotalMarks = new JLabel("Total Marks:");
+		Grade = new JLabel("Grade:");
+
+		p = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		d = new JPanel();
+		t = new JPanel(new FlowLayout(FlowLayout.CENTER));
+
+		l1 = new JLabel();
+		l2 = new JLabel();
+		l3 = new JLabel();
+        
+		p.add(txtLbl1);
+		p.add(txt1);
+
+		p.add(txtLbl2);
+		p.add(txt2);
+
+		p.add(txtLbl3);
+		p.add(txt3);
+
+		p.add(txtLbl4);
+		p.add(txt4);
+
+		p.add(txtLbl5);
+		p.add(txt5);
+
+		p.add(b);
+		
+		p.add(TotalMarks);
+		p.add(l1);
+
+		p.add(Grade);
+		p.add(l2);
+
+        p.setLayout(new GridLayout(8,1,5,5));
+		contentPane = this.getContentPane();
+		contentPane.add(t, BorderLayout.NORTH);
+		contentPane.add(p, BorderLayout.CENTER);
+		p.setLayout(new GridLayout(8,1,5,5));
+	}
+
+	void print(String content, JTextField t) {
+		 contentPane.add(l3, BorderLayout.NORTH);
+		JOptionPane.showMessageDialog(f, content, "Error", JOptionPane.ERROR_MESSAGE);
+		l1.setText("");
+		l2.setText("");
+		t.setText("");
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		int ia1 = -20;
+		int ia2 = -20;
+		int ia3 = -20;
+		int cta = -20;
+		int see = -20;
+
+		int cie, total;
+		char grade;
+
+		try {
+			ia1 = Integer.parseInt(txt1.getText());
+		} catch (NumberFormatException nfe) {
+			print("Invalid input for IA-1 marks", txt1);
+		}
+
+		try {
+			ia2 = Integer.parseInt(txt2.getText());
+		} catch (NumberFormatException nfe) {
+			print("Invalid input for IA-2 marks", txt2);
+		}
+
+		try {
+			ia3 = Integer.parseInt(txt3.getText());
+		} catch (NumberFormatException nfe) {
+			print("Invalid input for IA-3 marks", txt3);
+		}
+
+		try {
+			cta = Integer.parseInt(txt4.getText());
+		} catch (NumberFormatException nfe) {
+			print("Invalid input for CTA marks", txt4);
+		}
+
+		try {
+			see = Integer.parseInt(txt5.getText());
+		} catch (NumberFormatException nfe) {
+			print("Invalid input for SEE marks", txt5);
+		}
+
+		if (ia1 > 20 || ia1 < 0)
+			print("content:IA1 marks is INCORRECT", txt1);
+
+		else if (ia2 > 20 || ia2 < 0)
+			print("Invalid:IA2 marks is INCORRECT", txt2);
+
+		else if (ia3 > 20 || ia3 < 0)
+			print("content:IA3 marks is INCORRECT", txt3);
+
+		else if (cta > 10 || cta < 0)
+			print("content:CTA marks is INCORRECT", txt4);
+
+		else if (see > 100 || see < 0)
+			print("content: SEE marks is INCORRECT", txt5);
+
+		else {
+
+			if (ia3 < ia1 && ia3 < ia2)
+				cie = ia1 + ia2 + cta;
+
+			else if (ia2 < ia1 && ia2 < ia3)
+				cie = ia1 + ia3 + cta;
+
+			else
+				cie = ia2 + ia3 + cta;
+
+			if (cie < 20)
+				print("Student is detained from taking SEE", txt5);
+
+			if (see == 38 || see == 39)
+				see = 40;
+
+			if (see < 38)
+				print("content:Student Failed: Grade - F", txt5);
+
+			if (see % 2 == 0)
+				total = cie + see / 2;
+			else
+				total = cie + (see + 1) / 2;
+
+			if (cie >= 20 && see >= 40)
+				l1.setText(String.valueOf(total));
+			else
+				l1.setText("");
+
+			if (total >= 90)
+				grade = 'S';
+
+			else if (total >= 80 && total <= 89)
+				grade = 'A';
+
+			else if (total >= 70 && total <= 79)
+				grade = 'B';
+
+			else if (total >= 60 && total <= 69)
+				grade = 'C';
+
+			else if (total >= 50 && total <= 59)
+				grade = 'D';
+
+			else if (total >= 40 && total <= 49)
+				grade = 'E';
+
+			else
+				grade = 'F';
+
+			l2.setText(String.valueOf(grade));
+		}
+	}
+}
+
+public class MarksCalculatorDemo {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		JFrame f = new GradeCalc("Grade Calculator");
+		f.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		f.setTitle("Students Grading System");
+		f.setBounds(150, 200, 500, 300);
+		f.setVisible(true);
+	}
+}
